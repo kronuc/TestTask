@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  bank_system_api:
+    build:
+      context: .
+      dockerfile: BankSystem.API/Dockerfile
+    container_name: bank_system_api
+    ports:
+      - "5000:80"
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+
+  bank_system_dal:
+    build:
+      context: .
+      dockerfile: BankService.DAL/Dockerfile
+    container_name: bank_system_dal
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitmq
+      - POSTGRESQL_CONNECTION_STRING=Host=bank_system_db:5432;Username=user-name;Password=strong-password;Database=TransactionDB
+    depends_on:
+      - bank_system_db
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  bank_system_db:
+    image: postgres:15
+    container_name: bank_system_db
+    environment:
+      POSTGRES_USER: user-name
+      POSTGRES_PASSWORD: strong-password
+      POSTGRES_DB: TransactionDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  pgdata:
+  pgadmin-data:
+
