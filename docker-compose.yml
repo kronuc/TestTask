@@ -20,10 +20,14 @@ services:
       context: .
       dockerfile: BankService.DAL/Dockerfile
     container_name: bank_system_dal
+    ports:
+      - "7108:7108"
+      - "5053:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
       - RABBITMQ_HOST=rabbitmq
       - POSTGRESQL_CONNECTION_STRING=Host=bank_system_db:5432;Username=user-name;Password=strong-password;Database=TransactionDB
+      - ASPNETCORE_URLS=http://bank_system_dal:5053
     depends_on:
       - bank_system_db
       - rabbitmq
