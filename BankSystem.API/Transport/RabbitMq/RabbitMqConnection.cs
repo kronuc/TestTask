@@ -2,18 +2,21 @@
 using RabbitMQ.Client;
 using System.Collections.Concurrent;
 using System.Text;
+using Newtonsoft.Json;
+using SimpleBankSystem.API.Models;
+using BankSystem.API.Models.Request;
 
-namespace BankSystem.API.RabbitMq
+namespace BankSystem.API.Transport.RabbitMq
 {
     public class RabbitMqConnection
-        : IHostedService, IAsyncDisposable
+        : IHostedService, IAsyncDisposable, ITransactionTransportService
     {
         private const string TOPIC_NAME_CREATE_RPC = "rpc_create";
         private const string TOPIC_NAME_CLIENT_ID_RPC = "rpc_client_id";
         private const string TOPIC_NAME_REQUEST_ID_RPC = "rpc_request_id";
         private const string TOPIC_NAME_CREATE = "create";
         private const string TOPIC_NAME_CLIENT_ID = "client_id";
-        private const string TOPIC_NAME_REQUEST_ID= "request_id";
+        private const string TOPIC_NAME_REQUEST_ID = "request_id";
 
         private readonly IConnectionFactory _connectionFactory;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _callbackMapper
@@ -96,15 +99,16 @@ namespace BankSystem.API.RabbitMq
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync(exchange: "Main", type: ExchangeType.Topic);
-            
+
             await DeclareCreate();
             await DeclareGet();
             await DeclareGetById();
         }
 
-        public async Task<string> CallCreateAsync(string message,
-            CancellationToken cancellationToken = default)
+        public async Task<CreateTransactionResult> CreateTransaction(CreateTransactionQuery query, CancellationToken cancellationToken)
         {
+            var message = JsonConvert.SerializeObject(query);
+
             string correlationId = Guid.NewGuid().ToString();
             var props = new BasicProperties
             {
@@ -126,13 +130,13 @@ namespace BankSystem.API.RabbitMq
                     _callbackMapper.TryRemove(correlationId, out _);
                     tcs.SetCanceled();
                 });
-
-            return await tcs.Task;
+            var result = JsonConvert.DeserializeObject<CreateTransactionResult>(await tcs.Task);
+            return result;
         }
 
-        public async Task<string> CallGetAsync(string message,
-            CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<GetTransactionStateResult>> GetState(GetTransactionStateQuery query, CancellationToken cancellationToken)
         {
+            var message = JsonConvert.SerializeObject(query);
             if (_channel is null)
             {
                 throw new InvalidOperationException();
@@ -159,11 +163,11 @@ namespace BankSystem.API.RabbitMq
                     _callbackMapper.TryRemove(correlationId, out _);
                     tcs.SetCanceled();
                 });
-
-            return await tcs.Task;
+            var results = JsonConvert.DeserializeObject<IEnumerable<GetTransactionStateResult>>(await tcs.Task);
+            return results;
         }
-        public async Task<string> CallGetByIdAsync(string message,
-            CancellationToken cancellationToken = default)
+        public async Task<GetTransactionStateResult> GetState(string transactionId,
+            CancellationToken cancellationToken)
         {
             if (_channel is null)
             {
@@ -181,7 +185,7 @@ namespace BankSystem.API.RabbitMq
                     TaskCreationOptions.RunContinuationsAsynchronously);
             _callbackMapper.TryAdd(correlationId, tcs);
 
-            var messageBytes = Encoding.UTF8.GetBytes(message);
+            var messageBytes = Encoding.UTF8.GetBytes(transactionId);
             await _channel.BasicPublishAsync(exchange: "Main", routingKey: TOPIC_NAME_REQUEST_ID,
                 mandatory: true, basicProperties: props, body: messageBytes);
 
@@ -191,8 +195,8 @@ namespace BankSystem.API.RabbitMq
                     _callbackMapper.TryRemove(correlationId, out _);
                     tcs.SetCanceled();
                 });
-
-            return await tcs.Task;
+            var result = JsonConvert.DeserializeObject<GetTransactionStateResult>(await tcs.Task);
+            return result;
         }
         public async ValueTask DisposeAsync()
         {

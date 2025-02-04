@@ -2,7 +2,7 @@
 {
     public enum Currency
     {
-        UAN,
-        USD
+        UAN = 0,
+        USD = 1
     }
 }

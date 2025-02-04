@@ -1,0 +1,62 @@
+﻿syntax = "proto3";
+option csharp_namespace = "BankSystem.API";
+
+service CreateTransactionService 
+{
+    rpc CreateTransaction (CreateTransactionQueryGrpc) returns (CreateTransactionResponceGrpc);
+    
+    rpc GetTransaction (GetTransactionStateQueryGrpc) returns (GetTransactionStateResponceGrpc);   
+
+    rpc GetTransactionById (GetTransactionStateByIdQueryGrpc) returns (GetTransactionStateByIdResponceGrpc);
+}
+
+
+message CreateTransactionQueryGrpc 
+{
+    int32  ClientId = 1;
+    
+    string DepartmentAddress = 2;
+    
+    double Amount = 3;
+    
+    int32  Currency = 4;
+}
+
+message CreateTransactionResponceGrpc 
+{
+    int32  ClientId = 1;
+    
+    string DepartmentAddress = 2;
+    
+    double Amount = 3;
+    
+    int32  Currency = 4;
+}
+
+message GetTransactionStateQueryGrpc 
+{
+    int32  ClientId = 1;
+    
+    string DepartmentAddress = 2;
+}
+
+message GetTransactionStateResponceGrpc 
+{
+    int32  ClientId = 1;
+    
+    string DepartmentAddress = 2;
+
+    string State = 3;
+}
+
+message GetTransactionStateByIdQueryGrpc 
+{
+    string  TrunsactionId = 1;
+}
+
+message GetTransactionStateByIdResponceGrpc 
+{
+    int32  TrunsactionId = 1;
+    
+    string  State = 2;
+}

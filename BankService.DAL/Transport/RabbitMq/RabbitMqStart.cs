@@ -7,7 +7,7 @@ using BankSystem.Server.Models;
 using BankSystem.Server.DB;
 using BankSystem.API.Models.Request;
 
-namespace BankService.DAL.RabbitMq
+namespace BankService.DAL.Transport.RabbitMq
 {
     public class RabbitMqStart : IHostedService
     {
@@ -19,8 +19,8 @@ namespace BankService.DAL.RabbitMq
         const string TOPIC_NAME_REQUEST_ID = "request_id";
 
         private DapperBoardGameRepository _dapper;
-        
-        public RabbitMqStart(DapperBoardGameRepository dapper) 
+
+        public RabbitMqStart(DapperBoardGameRepository dapper)
         {
             _dapper = dapper;
         }
@@ -66,7 +66,7 @@ namespace BankService.DAL.RabbitMq
 
             await channel.QueueBindAsync(queue: requestQue, exchange: "Main", routingKey: TOPIC_NAME_CLIENT_ID);
             var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.ReceivedAsync += async (object sender, BasicDeliverEventArgs ea) =>
+            consumer.ReceivedAsync += async (sender, ea) =>
             {
                 AsyncEventingBasicConsumer cons = (AsyncEventingBasicConsumer)sender;
                 IChannel ch = cons.Channel;
@@ -120,7 +120,7 @@ namespace BankService.DAL.RabbitMq
 
             await channel.QueueBindAsync(queue: requestQue, exchange: "Main", routingKey: TOPIC_NAME_REQUEST_ID);
             var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.ReceivedAsync += async (object sender, BasicDeliverEventArgs ea) =>
+            consumer.ReceivedAsync += async (sender, ea) =>
             {
                 AsyncEventingBasicConsumer cons = (AsyncEventingBasicConsumer)sender;
                 IChannel ch = cons.Channel;
@@ -173,7 +173,7 @@ namespace BankService.DAL.RabbitMq
 
             await channel.QueueBindAsync(queue: requestQue, exchange: "Main", routingKey: TOPIC_NAME_CREATE);
             var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.ReceivedAsync += async (object sender, BasicDeliverEventArgs ea) =>
+            consumer.ReceivedAsync += async (sender, ea) =>
             {
                 AsyncEventingBasicConsumer cons = (AsyncEventingBasicConsumer)sender;
                 IChannel ch = cons.Channel;

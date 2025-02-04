@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,7 +7,15 @@
     <UserSecretsId>b5bc943e-0a15-4211-8b78-d27b842ab2ad</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
-
+  
+  <ItemGroup>
+    <Protobuf Include="Transport\Grpc\Proto\CreateTransactionService.proto" GrpcServices="Client" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Transport\Grpc\Proto\CreateTransactionService.proto">
+      <GrpcServices>Client</GrpcServices>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.29.3" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />

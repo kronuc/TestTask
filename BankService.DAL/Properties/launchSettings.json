@@ -28,10 +28,10 @@
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchUrl": "http://bank_system_dal:5053",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTPS_PORTS": "7108",
+        "ASPNETCORE_HTTP_PORTS": "5053"
       },
       "publishAllPorts": true,
       "useSSL": true
