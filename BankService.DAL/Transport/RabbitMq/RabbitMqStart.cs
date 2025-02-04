@@ -2,10 +2,8 @@
 using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
-using SimpleBankSystem.API.Models;
-using BankSystem.Server.Models;
-using BankSystem.Server.DB;
-using BankSystem.API.Models.Request;
+using BankService.DAL.DB;
+using BankService.DAL.Models;
 
 namespace BankService.DAL.Transport.RabbitMq
 {
@@ -18,9 +16,9 @@ namespace BankService.DAL.Transport.RabbitMq
         const string TOPIC_NAME_CLIENT_ID = "client_id";
         const string TOPIC_NAME_REQUEST_ID = "request_id";
 
-        private DapperBoardGameRepository _dapper;
+        private DapperTransactionRepository _dapper;
 
-        public RabbitMqStart(DapperBoardGameRepository dapper)
+        public RabbitMqStart(DapperTransactionRepository dapper)
         {
             _dapper = dapper;
         }
@@ -29,17 +27,7 @@ namespace BankService.DAL.Transport.RabbitMq
             var rabbitMqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
             var factory = new ConnectionFactory { Uri = new Uri($"amqp://guest:guest@{rabbitMqHost}:5672") };
             IConnection connection = null;
-            for (int i = 0; i < 60; i++)
-            {
-                try
-                {
-                    connection = await factory.CreateConnectionAsync();
-                }
-                catch (Exception)
-                {
-                    await Task.Delay(1000);
-                }
-            }
+            connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
             await channel.ExchangeDeclareAsync(exchange: "Main", type: ExchangeType.Topic);
             await DeclareCreate(channel);

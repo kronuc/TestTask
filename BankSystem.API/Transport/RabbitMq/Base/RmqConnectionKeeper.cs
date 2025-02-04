@@ -1,4 +1,7 @@
 ﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Collections.Concurrent;
+using System.Text;
 
 namespace BankSystem.API.Transport.RabbitMq.Base
 {
@@ -8,14 +11,14 @@ namespace BankSystem.API.Transport.RabbitMq.Base
         
         private IConnection? _connection;
         private IChannel? _channel;
-        
         public RmqConnectionKeeper()
         {
+            //change to rmq uri from env
             var rabbitMqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
             _connectionFactory = new ConnectionFactory { Uri = new Uri($"amqp://guest:guest@{rabbitMqHost}:5672") };
         }
 
-        public async Task<IConnection> CreateConnection()
+        private async Task<IConnection> CreateConnection()
         {
             IConnection connection = null;
             while (connection == null)
@@ -30,6 +33,7 @@ namespace BankSystem.API.Transport.RabbitMq.Base
             }
             return connection;
         }
+
         public async Task<IConnection> GetConnectionAsync() 
         {
             if(_connection == null || !_connection.IsOpen)
@@ -49,13 +53,23 @@ namespace BankSystem.API.Transport.RabbitMq.Base
             }
             return _channel;
         }
-
+        
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _connection = await CreateConnection();
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync(exchange: "Main", type: ExchangeType.Topic);
+        }
+
+        public Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await DisposeAsync();
         }
 
         public async ValueTask DisposeAsync()
@@ -71,14 +85,5 @@ namespace BankSystem.API.Transport.RabbitMq.Base
             }
         }
 
-        public Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await DisposeAsync();
-        }
     }
 }

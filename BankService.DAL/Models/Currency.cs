@@ -1,4 +1,4 @@
-﻿namespace SimpleBankSystem.API.Models
+﻿namespace BankService.DAL.Models
 {
     public enum Currency
     {

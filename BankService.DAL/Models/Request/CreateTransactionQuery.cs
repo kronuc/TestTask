@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBankSystem.API.Models
+namespace BankService.DAL.Models
 {
     public class CreateTransactionQuery
     {

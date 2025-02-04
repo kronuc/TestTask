@@ -5,16 +5,13 @@ namespace BankSystem.API.Models.Request
 {
     public class CreateTransactionQuery
     {
-        [Required]
-        public int ClientId { get; set; }
+        public required int ClientId { get; set; }
 
-        [Required]
-        public string DepartmentAddress { get; set; }
+        public required string DepartmentAddress { get; set; }
 
-        [Required]
-        public double Amount { get; set; }
+        public required double Amount { get; set; }
 
-        [Required]
-        public Currency Currency { get; set; }
+        public required Currency Currency { get; set; }
+
     }
 }

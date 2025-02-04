@@ -1,11 +1,10 @@
 using BankSystem.DAL;
 using Grpc.Core;
 
-namespace GrpcTest.Server.Services
+namespace BankService.DAL.Transport.Grpc.Services
 {
     public class TransportGrpcServer : CreateTransactionService.CreateTransactionServiceBase
     {
-        private static int i = 0;
         public TransportGrpcServer() { }
 
         public override Task<CreateTransactionResponceGrpc> CreateTransaction(CreateTransactionQueryGrpc request, ServerCallContext context)

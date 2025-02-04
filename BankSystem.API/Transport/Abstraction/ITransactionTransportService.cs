@@ -1,7 +1,7 @@
 ﻿using BankSystem.API.Models.Request;
 using SimpleBankSystem.API.Models;
 
-namespace BankSystem.API.Transport
+namespace BankSystem.API.Transport.Abstraction
 {
     public interface ITransactionTransportService
     {

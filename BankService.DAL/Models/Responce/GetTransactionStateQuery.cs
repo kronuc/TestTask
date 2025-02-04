@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BankSystem.API.Models.Request
+﻿namespace BankService.DAL.Models
 {
     public class GetTransactionStateResult
     {

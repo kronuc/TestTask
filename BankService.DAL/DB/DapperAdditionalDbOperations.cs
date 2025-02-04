@@ -1,13 +1,13 @@
 ﻿using Dapper;
 
-namespace BankSystem.Server.DB
+namespace BankService.DAL.DB
 {
     public class DapperAdditionalDbOperations : IHostedService
     {
         private const string TABLE_NAME = "Transaction";
-        private ConnectionKeeper _keeper;
+        private PostgresqlConnectionKeeper _keeper;
 
-        public DapperAdditionalDbOperations(ConnectionKeeper keeper)
+        public DapperAdditionalDbOperations(PostgresqlConnectionKeeper keeper)
         {
             _keeper = keeper;
         }

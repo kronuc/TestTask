@@ -1,8 +1,8 @@
 ﻿using Npgsql;
 
-namespace BankSystem.Server.DB
+namespace BankService.DAL.DB
 {
-    public class ConnectionKeeper
+    public class PostgresqlConnectionKeeper
     {
         private const string DEFAULT_CONNECTION_STRING = "Host=bank_system_db:5432;" +
                     "Username=user-name;" +
@@ -10,7 +10,7 @@ namespace BankSystem.Server.DB
                     "Database=TransactionDB";
         private string _connectionString;
 
-        public ConnectionKeeper()
+        public PostgresqlConnectionKeeper()
         {
             _connectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING") ?? DEFAULT_CONNECTION_STRING;
 

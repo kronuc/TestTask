@@ -1,15 +1,14 @@
-﻿using BankSystem.Server.Models;
+﻿using BankService.DAL.Models;
 using Dapper;
-using Npgsql;
 
-namespace BankSystem.Server.DB
+namespace BankService.DAL.DB
 {
 
-    public class DapperBoardGameRepository
+    public class DapperTransactionRepository
     {
         private const string TABLE_NAME = "Transaciontt2";
-        private ConnectionKeeper _keeper;
-        public DapperBoardGameRepository(ConnectionKeeper keeper)
+        private PostgresqlConnectionKeeper _keeper;
+        public DapperTransactionRepository(PostgresqlConnectionKeeper keeper)
         {
             _keeper = keeper;
 

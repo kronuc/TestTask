@@ -12,25 +12,27 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - RABBITMQ_HOST=rabbitmq
+      - TRANSPORT=rmq
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   bank_system_dal:
     build:
       context: .
       dockerfile: BankService.DAL/Dockerfile
     container_name: bank_system_dal
-    ports:
-      - "7108:7108"
-      - "5053:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
       - RABBITMQ_HOST=rabbitmq
       - POSTGRESQL_CONNECTION_STRING=Host=bank_system_db:5432;Username=user-name;Password=strong-password;Database=TransactionDB
       - ASPNETCORE_URLS=http://bank_system_dal:5053
+      - TRANSPORT=rmq
     depends_on:
-      - bank_system_db
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      bank_system_db:
+        condition: service_started
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -41,6 +43,11 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
 
   bank_system_db:
     image: postgres:15

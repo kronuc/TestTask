@@ -1,7 +1,6 @@
 ﻿using NpgsqlTypes;
-using SimpleBankSystem.API.Models;
 
-namespace BankSystem.Server.Models
+namespace BankService.DAL.Models
 {
     public class Transaction
     {

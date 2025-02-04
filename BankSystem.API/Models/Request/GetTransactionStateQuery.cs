@@ -4,10 +4,8 @@ namespace BankSystem.API.Models.Request
 {
     public class GetTransactionStateQuery
     {
-        [Required]
-        public int ClientId { get; set; }
+        public required int ClientId { get; set; }
 
-        [Required]
-        public string DepartmentAddress { get; set; }
+        public required string DepartmentAddress { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SimpleBankSystem.API.Models
+namespace BankService.DAL.Models
 {
     public class CreateTransactionResult
     {
@@ -14,6 +14,6 @@ namespace SimpleBankSystem.API.Models
         public double Amount { get; set; }
 
         [Required]
-        public Currency Currency {  get; set; }
+        public Currency Currency { get; set; }
     }
 }

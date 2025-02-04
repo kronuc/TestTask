@@ -1,6 +1,5 @@
 ﻿using BankSystem.API.Models.Request;
-using BankSystem.API.Transport.RabbitMq;
-using BankSystem.API.Transport.Transport;
+using BankSystem.API.Transport.Abstraction;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;

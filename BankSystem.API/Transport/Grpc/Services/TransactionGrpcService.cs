@@ -1,5 +1,5 @@
 ﻿using BankSystem.API.Models.Request;
-using BankSystem.API.Transport.Transport;
+using BankSystem.API.Transport.Abstraction;
 using SimpleBankSystem.API.Models;
 
 namespace BankSystem.API.Transport.Grpc.Services

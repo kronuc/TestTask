@@ -1,4 +1,4 @@
-﻿using GrpcTest.Server.Services;
+﻿using BankService.DAL.Transport.Grpc.Services;
 
 namespace BankService.DAL.Transport.Grpc
 {
